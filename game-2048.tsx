@@ -243,186 +243,200 @@ export default function Game2048() {
   }, [])
 
   return (
-    <div
-      className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-[#faf8ef] text-[#776e65] p-4"
-      ref={gameContainerRef}
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
-      aria-label="2048 Game Board"
-    >
-      {/* Music Player */}
-      <div className="w-full md:w-80 p-4 mb-6 md:mb-0 md:mr-8">
-        <div className="bg-[#bbada0] rounded-lg p-4 shadow-md">
-          <h2 className="text-xl font-bold text-white mb-3">Music Player</h2>
-          <div className="aspect-video bg-black rounded-md overflow-hidden mb-3">
-            <iframe
-              ref={playerRef}
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/KeMU25qciTc?list=OLAK5uy_ln2lPQIIaQXj2zMSM31GrOk3anZzN85Rk&autoplay=0"
-              title="YouTube Music Player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="flex justify-between items-center">
-              <Button
-                onClick={() => {
-                  setIsPlaying(!isPlaying)
-                  if (playerRef.current && playerRef.current.contentWindow) {
-                    playerRef.current.contentWindow.postMessage(
-                      `{"event":"command","func":"${isPlaying ? "pauseVideo" : "playVideo"}","args":""}`,
-                      "*",
-                    )
-                  }
-                }}
-                className="bg-[#8f7a66] text-white hover:bg-[#9f8a76] px-4"
-              >
-                {isPlaying ? "Pause" : "Play"}
-              </Button>
-              <Button
-                onClick={() => {
-                  setIsMuted(!isMuted)
-                  if (playerRef.current && playerRef.current.contentWindow) {
-                    playerRef.current.contentWindow.postMessage(
-                      `{"event":"command","func":"${isMuted ? "unMute" : "mute"}","args":""}`,
-                      "*",
-                    )
-                  }
-                }}
-                className="bg-[#8f7a66] text-white hover:bg-[#9f8a76] px-4"
-              >
-                {isMuted ? "Unmute" : "Mute"}
-              </Button>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-white text-sm">Volume:</span>
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={volume}
-                onChange={(e) => {
-                  const newVolume = Number.parseInt(e.target.value)
-                  setVolume(newVolume)
-                  if (playerRef.current && playerRef.current.contentWindow) {
-                    playerRef.current.contentWindow.postMessage(
-                      `{"event":"command","func":"setVolume","args":[${newVolume}]}`,
-                      "*",
-                    )
-                  }
-                }}
-                className="flex-1"
-              />
-            </div>
-          </div>
+    <div className="relative min-h-screen w-full overflow-hidden">
+      {/* Background Video Layer */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <div className="relative w-full h-full" style={{ opacity: 0.8 }}>
+          <iframe
+            src="https://www.youtube.com/embed/CV2P-xsEiYE?autoplay=1&controls=0&mute=1&loop=1&playlist=CV2P-xsEiYE"
+            className="absolute w-full h-full scale-150 pointer-events-none"
+            allow="autoplay; encrypted-media"
+            frameBorder="0"
+          />
         </div>
       </div>
-
-      {/* Game */}
-      <div className="w-full max-w-md flex flex-col items-center">
-        <div className="flex justify-between items-center mb-4 w-full">
-          <h1 className="text-6xl font-bold">2048</h1>
-          <div className="flex gap-2 ml-auto">
-            <div className="bg-[#bbada0] p-2 h-14 w-14 rounded-md text-white flex flex-col items-center">
-              <div className="text-sm">SCORE</div>
-              <div className="font-bold">{score}</div>
+      
+      {/* Game Content */}
+      <div 
+        className="relative z-10 flex flex-col md:flex-row items-center justify-center min-h-screen text-[#776e65] p-4"
+        ref={gameContainerRef}
+        tabIndex={0}
+        onKeyDown={handleKeyDown}
+        aria-label="2048 Game Board"
+      >
+        {/* Music Player */}
+        <div className="w-full md:w-80 p-4 mb-6 md:mb-0 md:mr-8">
+          <div className="rounded-lg p-4 shadow-md border-2 border-white bg-transparent">
+            <h2 className="text-xl font-bold text-white mb-3">Music Player</h2>
+            <div className="aspect-video bg-black rounded-md overflow-hidden mb-3">
+              <iframe
+                ref={playerRef}
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/KeMU25qciTc?list=OLAK5uy_ln2lPQIIaQXj2zMSM31GrOk3anZzN85Rk&autoplay=0"
+                title="YouTube Music Player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
             </div>
-            <div className="bg-[#bbada0] h-14 w-14 rounded-md p-2 text-white flex flex-col items-center">
-              <div className="text-sm">BEST</div>
-              <div className="font-bold">{bestScore}</div>
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-center">
+                <Button
+                  onClick={() => {
+                    setIsPlaying(!isPlaying)
+                    if (playerRef.current && playerRef.current.contentWindow) {
+                      playerRef.current.contentWindow.postMessage(
+                        `{"event":"command","func":"${isPlaying ? "pauseVideo" : "playVideo"}","args":""}`,
+                        "*",
+                      )
+                    }
+                  }}
+                  className="bg-[#8f7a66] text-white hover:bg-[#9f8a76] px-4"
+                >
+                  {isPlaying ? "Pause" : "Play"}
+                </Button>
+                <Button
+                  onClick={() => {
+                    setIsMuted(!isMuted)
+                    if (playerRef.current && playerRef.current.contentWindow) {
+                      playerRef.current.contentWindow.postMessage(
+                        `{"event":"command","func":"${isMuted ? "unMute" : "mute"}","args":""}`,
+                        "*",
+                      )
+                    }
+                  }}
+                  className="bg-[#8f7a66] text-white hover:bg-[#9f8a76] px-4"
+                >
+                  {isMuted ? "Unmute" : "Mute"}
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-white text-sm">Volume:</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={volume}
+                  onChange={(e) => {
+                    const newVolume = Number.parseInt(e.target.value)
+                    setVolume(newVolume)
+                    if (playerRef.current && playerRef.current.contentWindow) {
+                      playerRef.current.contentWindow.postMessage(
+                        `{"event":"command","func":"setVolume","args":[${newVolume}]}`,
+                        "*",
+                      )
+                    }
+                  }}
+                  className="flex-1"
+                />
+              </div>
             </div>
           </div>
         </div>
-        <div className="bg-[#bbada0] p-2 rounded-lg w-fit">
-          <div
-            className="relative"
-            style={{
-              width: `${CELL_SIZE * GRID_SIZE + CELL_GAP * (GRID_SIZE - 1)}rem`,
-              height: `${CELL_SIZE * GRID_SIZE + CELL_GAP * (GRID_SIZE - 1)}rem`,
-            }}
-          >
-            {/* Background grid */}
-            {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, index) => (
-              <div
-                key={`cell-${index}`}
-                className="absolute bg-[#cdc1b4] rounded-md"
-                style={{
-                  width: `${CELL_SIZE}rem`,
-                  height: `${CELL_SIZE}rem`,
-                  left: `${(index % GRID_SIZE) * (CELL_SIZE + CELL_GAP)}rem`,
-                  top: `${Math.floor(index / GRID_SIZE) * (CELL_SIZE + CELL_GAP)}rem`,
-                }}
-              />
-            ))}
-            {/* Tiles */}
-            <AnimatePresence>
-              {board.map((tile) => (
-                <motion.div
-                  key={tile.id}
-                  initial={
-                    tile.isNew
-                      ? {
-                          scale: 0,
-                          x: tile.col * (CELL_SIZE + CELL_GAP) + "rem",
-                          y: tile.row * (CELL_SIZE + CELL_GAP) + "rem",
-                        }
-                      : { scale: 0 }
-                  }
-                  animate={{
-                    scale: 1,
-                    x: tile.col * (CELL_SIZE + CELL_GAP) + "rem",
-                    y: tile.row * (CELL_SIZE + CELL_GAP) + "rem",
-                  }}
-                  exit={{ scale: 0 }}
-                  transition={tile.isNew ? { duration: 0.15 } : { x: { duration: 0.15 }, y: { duration: 0.15 } }}
-                  className={`absolute rounded-md flex items-center justify-center text-2xl font-bold ${cellColor(tile.value)}`}
+
+        {/* Game */}
+        <div className="w-full max-w-md flex flex-col items-center">
+          <div className="flex justify-between items-center mb-4 w-full">
+            <h1 className="text-6xl font-bold text-white">2048</h1>
+            <div className="flex gap-2 ml-auto">
+              <div className="bg-[#bbada0] p-2 h-14 w-14 rounded-md text-white flex flex-col items-center">
+                <div className="text-sm">分數</div>
+                <div className="font-bold">{score}</div>
+              </div>
+              <div className="bg-[#bbada0] h-14 w-14 rounded-md p-2 text-white flex flex-col items-center">
+                <div className="text-sm">最佳</div>
+                <div className="font-bold">{bestScore}</div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[#bbada0] p-2 rounded-lg w-fit">
+            <div
+              className="relative"
+              style={{
+                width: `${CELL_SIZE * GRID_SIZE + CELL_GAP * (GRID_SIZE - 1)}rem`,
+                height: `${CELL_SIZE * GRID_SIZE + CELL_GAP * (GRID_SIZE - 1)}rem`,
+              }}
+            >
+              {/* Background grid */}
+              {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, index) => (
+                <div
+                  key={`cell-${index}`}
+                  className="absolute bg-[#cdc1b4] rounded-md"
                   style={{
                     width: `${CELL_SIZE}rem`,
                     height: `${CELL_SIZE}rem`,
+                    left: `${(index % GRID_SIZE) * (CELL_SIZE + CELL_GAP)}rem`,
+                    top: `${Math.floor(index / GRID_SIZE) * (CELL_SIZE + CELL_GAP)}rem`,
                   }}
-                >
-                  <motion.div
-                    variants={tileVariants}
-                    animate={tile.justMerged ? "merged" : "enter"}
-                    className="w-full h-full flex items-center justify-center"
-                  >
-                    {tile.value}
-                  </motion.div>
-                </motion.div>
+                />
               ))}
-            </AnimatePresence>
+              {/* Tiles */}
+              <AnimatePresence>
+                {board.map((tile) => (
+                  <motion.div
+                    key={tile.id}
+                    initial={
+                      tile.isNew
+                        ? {
+                            scale: 0,
+                            x: tile.col * (CELL_SIZE + CELL_GAP) + "rem",
+                            y: tile.row * (CELL_SIZE + CELL_GAP) + "rem",
+                          }
+                        : { scale: 0 }
+                    }
+                    animate={{
+                      scale: 1,
+                      x: tile.col * (CELL_SIZE + CELL_GAP) + "rem",
+                      y: tile.row * (CELL_SIZE + CELL_GAP) + "rem",
+                    }}
+                    exit={{ scale: 0 }}
+                    transition={tile.isNew ? { duration: 0.15 } : { x: { duration: 0.15 }, y: { duration: 0.15 } }}
+                    className={`absolute rounded-md flex items-center justify-center text-2xl font-bold ${cellColor(tile.value)}`}
+                    style={{
+                      width: `${CELL_SIZE}rem`,
+                      height: `${CELL_SIZE}rem`,
+                    }}
+                  >
+                    <motion.div
+                      variants={tileVariants}
+                      animate={tile.justMerged ? "merged" : "enter"}
+                      className="w-full h-full flex items-center justify-center"
+                    >
+                      {tile.value}
+                    </motion.div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+          </div>
+          <div className="mt-4 text-sm text-white">
+            <p>
+              <strong>遊戲說明：</strong>使用<strong>方向鍵</strong>移動方塊。當兩個相同數字的方塊相遇時，它們會<strong>合併成一個！</strong>
+            </p>
+          </div>
+          <div className="mt-4">
+            <Button onClick={initializeGame} className="bg-[#8f7a66] text-white hover:bg-[#9f8a76]">
+              新遊戲
+            </Button>
           </div>
         </div>
-        <div className="mt-4 text-sm">
-          <p>
-            <strong>HOW TO PLAY:</strong> Use your <strong>arrow keys</strong> to move the tiles. When two tiles with
-            the same number touch, they <strong>merge into one!</strong>
-          </p>
-        </div>
-        <div className="mt-4">
-          <Button onClick={initializeGame} className="bg-[#8f7a66] text-white hover:bg-[#9f8a76]">
-            New Game
-          </Button>
-        </div>
-      </div>
 
-      <Dialog open={isGameOver} onOpenChange={setIsGameOver}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Game Over!</DialogTitle>
-            <DialogDescription>
-              Your score: {score}
-              {score === bestScore && score > 0 && " (New Best!)"}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button onClick={initializeGame} className="bg-[#8f7a66] text-white hover:bg-[#9f8a76]">
-              Play Again
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        <Dialog open={isGameOver} onOpenChange={setIsGameOver}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Game Over!</DialogTitle>
+              <DialogDescription>
+                Your score: {score}
+                {score === bestScore && score > 0 && " (New Best!)"}
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button onClick={initializeGame} className="bg-[#8f7a66] text-white hover:bg-[#9f8a76]">
+                Play Again
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   )
 }
