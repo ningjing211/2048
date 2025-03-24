@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog"
 
 const GRID_SIZE = 4
-const CELL_SIZE = 6 // in rem
+const CELL_SIZE = 5.625 // in rem
 const CELL_GAP = 0.5 // in rem
 
 type Tile = {
@@ -263,78 +263,56 @@ export default function Game2048() {
         tabIndex={0}
         onKeyDown={handleKeyDown}
         aria-label="2048 Game Board"
+        style={{
+          "--scrollbar-thumb": "#8f7a66",
+          "--scrollbar-track": "rgba(255, 255, 255, 0.1)",
+        } as React.CSSProperties}
       >
-        {/* Music Player */}
-        <div className="fixed bottom-4 left-4 w-full md:w-80 scale-80">
-          <div className="rounded-lg p-4 shadow-md border-2 border-white bg-transparent">
-            <h2 className="text-xl font-bold text-white mb-3">Music Player</h2>
-            <div className="aspect-video bg-black rounded-md overflow-hidden mb-3">
+        {/* Friend */}
+        <div className="fixed bottom-4 left-4 w-full md:w-80 h-[95vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-[var(--scrollbar-track)] [&::-webkit-scrollbar-thumb]:bg-[var(--scrollbar-thumb)] [&::-webkit-scrollbar-thumb]:rounded-full">
+          <div className="rounded-lg p-4 shadow-md border-2 border-white bg-transparent mb-4">
+            <h2 className="text-xl font-bold text-white mb-3">Friend 3</h2>
+            <div className="aspect-video bg-black rounded-md overflow-hidden">
               <iframe
-                ref={playerRef}
                 className="w-full h-full"
-                src="https://www.youtube.com/embed/KeMU25qciTc?list=OLAK5uy_ln2lPQIIaQXj2zMSM31GrOk3anZzN85Rk&autoplay=0"
-                title="YouTube Music Player"
+                src="https://www.youtube.com/embed/WZG_5OAzgKo?autoplay=0&enablejsapi=1"
+                title="YouTube Friend"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               ></iframe>
             </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex justify-between items-center">
-                <Button
-                  onClick={() => {
-                    setIsPlaying(!isPlaying)
-                    if (playerRef.current && playerRef.current.contentWindow) {
-                      playerRef.current.contentWindow.postMessage(
-                        `{"event":"command","func":"${isPlaying ? "pauseVideo" : "playVideo"}","args":""}`,
-                        "*",
-                      )
-                    }
-                  }}
-                  className="bg-[#8f7a66] text-white hover:bg-[#9f8a76] px-4"
-                >
-                  {isPlaying ? "Pause" : "Play"}
-                </Button>
-                <Button
-                  onClick={() => {
-                    setIsMuted(!isMuted)
-                    if (playerRef.current && playerRef.current.contentWindow) {
-                      playerRef.current.contentWindow.postMessage(
-                        `{"event":"command","func":"${isMuted ? "unMute" : "mute"}","args":""}`,
-                        "*",
-                      )
-                    }
-                  }}
-                  className="bg-[#8f7a66] text-white hover:bg-[#9f8a76] px-4"
-                >
-                  {isMuted ? "Unmute" : "Mute"}
-                </Button>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-white text-sm">Volume:</span>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={volume}
-                  onChange={(e) => {
-                    const newVolume = Number.parseInt(e.target.value)
-                    setVolume(newVolume)
-                    if (playerRef.current && playerRef.current.contentWindow) {
-                      playerRef.current.contentWindow.postMessage(
-                        `{"event":"command","func":"setVolume","args":[${newVolume}]}`,
-                        "*",
-                      )
-                    }
-                  }}
-                  className="flex-1"
-                />
-              </div>
+          </div>
+
+          <div className="rounded-lg p-4 shadow-md border-2 border-white bg-transparent mb-4">
+            <h2 className="text-xl font-bold text-white mb-3">Friend 1</h2>
+            <div className="aspect-video bg-black rounded-md overflow-hidden">
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/do66_PBzijI?autoplay=0&enablejsapi=1"
+                title="YouTube Friend"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+          </div>
+
+          <div className="rounded-lg p-4 shadow-md border-2 border-white bg-transparent">
+            <h2 className="text-xl font-bold text-white mb-3">Friend 2</h2>
+            <div className="aspect-video bg-black rounded-md overflow-hidden">
+              <iframe
+                ref={playerRef}
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/KeMU25qciTc?list=OLAK5uy_ln2lPQIIaQXj2zMSM31GrOk3anZzN85Rk&autoplay=0"
+                title="YouTube Friend"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
             </div>
           </div>
         </div>
 
         {/* Game */}
-        <div className="w-full max-w-md flex flex-col items-center">
+        <div className="w-full max-w-[24rem] flex flex-col items-center">
           <div className="flex justify-between items-center mb-4 w-full">
             <h1 className="text-6xl font-bold text-white">2048</h1>
             <div className="flex gap-2 ml-auto">
