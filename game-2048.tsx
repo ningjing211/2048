@@ -258,14 +258,14 @@ export default function Game2048() {
       
       {/* Game Content */}
       <div 
-        className="relative z-10 flex flex-col md:flex-row items-center justify-center min-h-screen text-[#776e65] p-4"
+        className="relative z-10 flex flex-col md:flex-row items-end justify-end min-h-screen text-[#776e65] p-4 scale-80 mr-20 outline-none"
         ref={gameContainerRef}
         tabIndex={0}
         onKeyDown={handleKeyDown}
         aria-label="2048 Game Board"
       >
         {/* Music Player */}
-        <div className="w-full md:w-80 p-4 mb-6 md:mb-0 md:mr-8">
+        <div className="fixed bottom-4 left-4 w-full md:w-80 scale-80">
           <div className="rounded-lg p-4 shadow-md border-2 border-white bg-transparent">
             <h2 className="text-xl font-bold text-white mb-3">Music Player</h2>
             <div className="aspect-video bg-black rounded-md overflow-hidden mb-3">
