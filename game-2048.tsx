@@ -191,6 +191,49 @@ export default function Game2048() {
     }
   }
 
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0]
+    const startX = touch.clientX
+    const startY = touch.clientY
+    
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!e.touches[0]) return
+      
+      const touch = e.touches[0]
+      const deltaX = touch.clientX - startX
+      const deltaY = touch.clientY - startY
+      
+      // 需要一定的滑动距离才触发移动，这里设置为30像素
+      const minSwipeDistance = 30
+      
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+        // 水平滑动
+        if (deltaX > 0) {
+          move("right")
+        } else {
+          move("left")
+        }
+      } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > minSwipeDistance) {
+        // 垂直滑动
+        if (deltaY > 0) {
+          move("down")
+        } else {
+          move("up")
+        }
+      }
+      
+      // 移除事件监听器
+      document.removeEventListener("touchmove", handleTouchMove)
+    }
+    
+    document.addEventListener("touchmove", handleTouchMove, { once: true })
+  }
+
+  const handleTouchEnd = () => {
+    // 清理所有相关的事件监听器
+    document.removeEventListener("touchmove", () => {})
+  }
+
   const cellColor = (value: number) => {
     switch (value) {
       case 2:
@@ -262,6 +305,8 @@ export default function Game2048() {
         ref={gameContainerRef}
         tabIndex={0}
         onKeyDown={handleKeyDown}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         aria-label="2048 Game Board"
         style={{
           "--scrollbar-thumb": "#8f7a66",
