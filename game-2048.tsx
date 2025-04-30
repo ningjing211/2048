@@ -39,6 +39,7 @@ export default function Game2048() {
   const [volume, setVolume] = useState(50)
   const playerRef = useRef<HTMLIFrameElement>(null)
   const [touchStart, setTouchStart] = useState({ x: 0, y: 0 })
+  const [isSwiping, setIsSwiping] = useState(false)
 
   useEffect(() => {
     initializeGame()
@@ -199,11 +200,12 @@ export default function Game2048() {
       x: touch.clientX,
       y: touch.clientY
     })
+    setIsSwiping(false)
   }
 
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
     e.preventDefault()
-    if (!e.touches[0]) return
+    if (!e.touches[0] || isSwiping) return
 
     const touch = e.touches[0]
     const deltaX = touch.clientX - touchStart.x
@@ -214,6 +216,9 @@ export default function Game2048() {
     if (Math.abs(deltaX) < minSwipeDistance && Math.abs(deltaY) < minSwipeDistance) {
       return
     }
+
+    // 设置正在滑动的标志，防止重复触发
+    setIsSwiping(true)
 
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
       // 水平滑动
@@ -230,17 +235,10 @@ export default function Game2048() {
         move("up")
       }
     }
-
-    // 重置触摸起始点，防止连续触发
-    setTouchStart({
-      x: touch.clientX,
-      y: touch.clientY
-    })
   }
 
   const handleTouchEnd = () => {
-    // 清理所有相关的事件监听器
-    document.removeEventListener("touchmove", () => {})
+    setIsSwiping(false)
   }
 
   const cellColor = (value: number) => {
@@ -316,6 +314,7 @@ export default function Game2048() {
         onKeyDown={handleKeyDown}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         aria-label="2048 Game Board"
         style={{
           "--scrollbar-thumb": "#8f7a66",
