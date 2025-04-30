@@ -38,6 +38,7 @@ export default function Game2048() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(50)
   const playerRef = useRef<HTMLIFrameElement>(null)
+  const [touchStart, setTouchStart] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
     initializeGame()
@@ -192,41 +193,49 @@ export default function Game2048() {
   }
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault()
     const touch = e.touches[0]
-    const startX = touch.clientX
-    const startY = touch.clientY
+    setTouchStart({
+      x: touch.clientX,
+      y: touch.clientY
+    })
+  }
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    if (!e.touches[0]) return
+
+    const touch = e.touches[0]
+    const deltaX = touch.clientX - touchStart.x
+    const deltaY = touch.clientY - touchStart.y
     
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!e.touches[0]) return
-      
-      const touch = e.touches[0]
-      const deltaX = touch.clientX - startX
-      const deltaY = touch.clientY - startY
-      
-      // 需要一定的滑动距离才触发移动，这里设置为30像素
-      const minSwipeDistance = 30
-      
-      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
-        // 水平滑动
-        if (deltaX > 0) {
-          move("right")
-        } else {
-          move("left")
-        }
-      } else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > minSwipeDistance) {
-        // 垂直滑动
-        if (deltaY > 0) {
-          move("down")
-        } else {
-          move("up")
-        }
-      }
-      
-      // 移除事件监听器
-      document.removeEventListener("touchmove", handleTouchMove)
+    const minSwipeDistance = 30
+
+    if (Math.abs(deltaX) < minSwipeDistance && Math.abs(deltaY) < minSwipeDistance) {
+      return
     }
-    
-    document.addEventListener("touchmove", handleTouchMove, { once: true })
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // 水平滑动
+      if (deltaX > 0) {
+        move("right")
+      } else {
+        move("left")
+      }
+    } else {
+      // 垂直滑动
+      if (deltaY > 0) {
+        move("down")
+      } else {
+        move("up")
+      }
+    }
+
+    // 重置触摸起始点，防止连续触发
+    setTouchStart({
+      x: touch.clientX,
+      y: touch.clientY
+    })
   }
 
   const handleTouchEnd = () => {
@@ -301,16 +310,17 @@ export default function Game2048() {
       
       {/* Game Content */}
       <div 
-        className="relative z-10 flex flex-col md:flex-row items-end justify-end min-h-screen text-[#776e65] p-4 md:scale-80 md:mr-20 outline-none"
+        className="relative z-10 flex flex-col md:flex-row items-end justify-end min-h-screen text-[#776e65] p-4 md:scale-80 md:mr-20 outline-none touch-none"
         ref={gameContainerRef}
         tabIndex={0}
         onKeyDown={handleKeyDown}
         onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
         aria-label="2048 Game Board"
         style={{
           "--scrollbar-thumb": "#8f7a66",
           "--scrollbar-track": "rgba(255, 255, 255, 0.1)",
+          touchAction: "none"
         } as React.CSSProperties}
       >
         {/* Friend */}
