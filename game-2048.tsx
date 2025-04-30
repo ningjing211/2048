@@ -243,7 +243,7 @@ export default function Game2048() {
   }, [])
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
+    <div className="relative min-h-screen w-full overflow-hidden border-none">
       {/* Background Video Layer */}
       <div className="absolute inset-0 w-full h-full z-0">
         <div className="relative w-full h-full" style={{ opacity: 0.8 }}>
@@ -258,7 +258,7 @@ export default function Game2048() {
       
       {/* Game Content */}
       <div 
-        className="relative z-10 flex flex-col md:flex-row items-end justify-end min-h-screen text-[#776e65] p-4 scale-80 mr-20 outline-none"
+        className="relative z-10 flex flex-col md:flex-row items-end justify-end min-h-screen text-[#776e65] p-4 md:scale-80 md:mr-20 outline-none"
         ref={gameContainerRef}
         tabIndex={0}
         onKeyDown={handleKeyDown}
@@ -269,7 +269,7 @@ export default function Game2048() {
         } as React.CSSProperties}
       >
         {/* Friend */}
-        <div className="fixed bottom-4 left-4 w-full md:w-80 h-[95vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-[var(--scrollbar-track)] [&::-webkit-scrollbar-thumb]:bg-[var(--scrollbar-thumb)] [&::-webkit-scrollbar-thumb]:rounded-full">
+        <div className="hidden md:block fixed bottom-4 left-4 w-80 h-[95vh] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-[var(--scrollbar-track)] [&::-webkit-scrollbar-thumb]:bg-[var(--scrollbar-thumb)] [&::-webkit-scrollbar-thumb]:rounded-full">
           <div className="rounded-lg p-4 shadow-md border-2 border-white bg-transparent mb-4">
             <h2 className="text-xl font-bold text-white mb-3">Friend 6</h2>
             <div className="aspect-video bg-black rounded-md overflow-hidden">
